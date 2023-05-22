@@ -1,0 +1,7 @@
+spotipy
+youtube_dl
+youtube_search
+yt_dlp
+ffprobe
+ffmpeg
+chardet

@@ -8,7 +8,7 @@ This code is meant to be as simple and easy-to-use as possible. Despite this, th
 
 ### 1. Clone the respository
 
-To clone this repoistory using Git, use
+To clone this repository using Git, use
 
 ```bash
 git clone https://github.com/JayChen35/spotify-to-mp3-python.git
@@ -29,20 +29,20 @@ We will be installing dependencies using `pip`, the official Python package mana
 Copy and paste (and run) the following line in your terminal session to install all necessary packages.
 
 ```bash
-pip3 install spotipy && pip3 install youtube_dl && pip3 install youtube_search && pip3 install yt_dlp && pip3 install ffprobe && pip3 install ffmpeg
+pip3 install spotipy youtube_dl youtube_search yt_dlp ffprobe ffmpeg
 ```
 
 ### 3. Setting up Spotify
 
 Unfortunately, I could not find a workaround for this step - it seems like we're forced to go through the Spotify API to fetch information about playlists. But, it doesn't take long at all.
 
-Go to the Spotify [dashboard](https://developer.spotify.com/dashboard/).  Log in. Once at the Dashboard, click the green button labeled "Create App". Don't worry - you're not signing up for anything or commiting to something from Spotify. Here, **it really doesn't matter what you put** for "App name" and "App description". For me, I just put "Testing" for both. Make sure to check both agreement boxes and click "Create".
+Go to the Spotify [dashboard](https://developer.spotify.com/dashboard/).  Log in. Once at the Dashboard, click the green button labeled "Create App". Don't worry - you're not signing up for anything or committing to something from Spotify. Here, **it really doesn't matter what you put** for "App name" and "App description". For me, I just put "Testing" for both. Make sure to check both agreement boxes and click "Create".
 
 You should see this:
 
 ![Spotify App Screen](https://miro.medium.com/max/1400/1*8c7agz6nxmez9-bm2NFCxQ.jpeg)
 
-You will see the "Client ID" field on the left (it's redacted here). Copy and save your Client ID somewhere - you'll need it later. Click "Show client secret" under Client ID and it should show you another long list of characters. Also copy and save your Client Secret.
+You will see the "Client ID" field on the left (it's redacted here). Copy and save your Client ID somewhere - you'll need it later. Click "Show client secret" under Client ID, and it should show you another long list of characters. Also copy and save your Client Secret.
 
 Next, we need your playlist URI. To do this, simply open Spotify, right-click on the playlist you want to download, hover over "Share", and click "Copy Spotify URI". It should look something like this: `spotify:playlist:37i9dQZEVXbJiZcmkrIHGU`. When inputting this into the script, make sure to *only input the characters after "spotify:playlist:"*. So for this example, input `37i9dQZEVXbJiZcmkrIHGU`. Save your URI somewhere handy.
 
@@ -60,7 +60,7 @@ If all goes well, you should see your playlist beginning to download in a folder
 
 ## Modifications
 
-If you don't like inputting your Client ID, Client Secret, Username, and URI  every time, you can edit lines 96-99 in `spotify_to_mp3.py` to set the respective variables into a string containing your credentials instead of prompting with `input()`. For example, line 98 would become
+If you don't like inputting your Client ID, Client Secret, Username, and URI every time, you can edit lines 96-99 in `spotify_to_mp3.py` to set the respective variables into a string containing your credentials instead of prompting with `input()`. For example, line 98 would become
 
 ```python
 username = "YourUserName"
@@ -68,4 +68,4 @@ username = "YourUserName"
 
 ## Debugging
 
-This script was made in the better part of an afternoon and so it's not, by far, bug-free. Personally, I've run into no problems using this script on any of my playlists, however, your mileage may vary. The most promenant bug I've run into involves the `youtube-search` package not consistantly turning up results, and most of the time, the best solution is to simply try running the script again and giving it more chances to get the search right.
+This script was made in the better part of an afternoon and so it's not, by far, bug-free. Personally, I've run into no problems using this script on any of my playlists, however, your mileage may vary. The most prominent bug I've run into involves the `youtube-search` package not consistently turning up results, and most of the time, the best solution is to simply try running the script again and giving it more chances to get the search right.

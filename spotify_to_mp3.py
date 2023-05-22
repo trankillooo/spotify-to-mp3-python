@@ -10,9 +10,13 @@ import multiprocessing
 
 # **************PLEASE READ THE README.md FOR USE INSTRUCTIONS**************
 
+# client_id: str = ""
+# client_secret: str = ""
+
+
 def write_tracks(text_file: str, tracks: dict):
     # Writes the information of all tracks in the playlist to a text file. 
-    # This includins the name, artist, and spotify URL. Each is delimited by a comma.
+    # This includes the name, artist, and spotify URL. Each is delimited by a comma.
     with open(text_file, 'w+', encoding='utf-8') as file_out:
         while True:
             for item in tracks['items']:
@@ -40,8 +44,8 @@ def write_tracks(text_file: str, tracks: dict):
                 break
 
 
-def write_playlist(username: str, playlist_id: str):
-    results = spotify.user_playlist(username, playlist_id, fields='tracks,next,name')
+def write_playlist(playlist_id: str):
+    results = spotify.playlist(playlist_id, fields='tracks,next,name')
     playlist_name = results['name']
     text_file = u'{0}.txt'.format(playlist_name, ok='-_()[]{}')
     print(u'Writing {0} tracks to {1}.'.format(results['tracks']['total'], text_file))
@@ -78,15 +82,15 @@ def find_and_download_songs(reference_file: str):
                 'postprocessors': [{
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'mp3',
-                    'preferredquality': '192',
+                    'preferredquality': '256',
                 }],
             }
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([best_url])
 
 
-# Multiprocessed implementation of find_and_download_songs
-# This method is responsible for manging and distributing the multi-core workload
+# Multiprocessor implementation of find_and_download_songs
+# This method is responsible for manging and distributing the multicore workload
 def multicore_find_and_download_songs(reference_file: str, cpu_count: int):
     # Extract songs from the reference file
     
@@ -99,7 +103,7 @@ def multicore_find_and_download_songs(reference_file: str, cpu_count: int):
     number_of_songs = len(lines)
     songs_per_cpu = number_of_songs // cpu_count
 
-    # Calculates number of songs that dont evenly fit into the cpu list
+    # Calculates number of songs that don't evenly fit into the cpu list
     # i.e. 4 cores and 5 songs, one core will have to process 1 extra song
     extra_songs = number_of_songs - (cpu_count * songs_per_cpu)
 
@@ -122,8 +126,8 @@ def multicore_find_and_download_songs(reference_file: str, cpu_count: int):
         index = index + cpu
         file_segments.append(segment)
     
-    # Prepares all of the seperate processes before starting them
-    # Pass each process a new shorter list of songs vs 1 process being handed all of the songs
+    # Prepares all the separate processes before starting them
+    # Pass each process a new shorter list of songs vs 1 process being handed all the songs
     processes = []
     segment_index = 0
     for segment in file_segments:
@@ -138,6 +142,7 @@ def multicore_find_and_download_songs(reference_file: str, cpu_count: int):
     # Wait for the processes to complete and exit as a group
     for p in processes:
         p.join()
+
 
 # Just a wrapper around the original find_and_download_songs method to ensure future compatibility
 # Preserves the same functionality just allows for several shorter lists to be used and cleaned up
@@ -154,50 +159,52 @@ def multicore_handler(reference_list: list, segment_index: int):
     find_and_download_songs(reference_filename)    
 
     # Clean up the extra list that was generated
-    if(os.path.exists(reference_filename)):
+    if os.path.exists(reference_filename):
         os.remove(reference_filename)
 
 
 # This is prompt to handle the multicore queries
 # An effort has been made to create an easily automated interface
-# Autoeneable: bool allows for no prompts and defaults to max core usage
+# Autoenable: bool allows for no prompts and defaults to max core usage
 # Maxcores: int allows for automation of set number of cores to be used
 # Buffercores: int allows for an allocation of unused cores (default 1)
 def enable_multicore(autoenable=False, maxcores=None, buffercores=1):
     native_cpu_count = multiprocessing.cpu_count() - buffercores
     if autoenable:
         if maxcores:
-            if(maxcores <= native_cpu_count):
+            if maxcores <= native_cpu_count:
                 return maxcores
             else:
                 print("Too many cores requested, single core operation fallback")
                 return 1
         return multiprocessing.cpu_count() - 1
     multicore_query = input("Enable multiprocessing (Y or N): ")
-    if multicore_query not in ["Y","y","Yes","YES","YEs",'yes']:
+    if multicore_query not in ["Y", "y", "Yes", "YES", "YEs", "yes"]:
         return 1
-    core_count_query = int(input("Max core count (0 for allcores): "))
-    if(core_count_query == 0):
+    core_count_query = int(input("Max core count (0 for all cores): "))
+    if core_count_query == 0:
         return native_cpu_count
-    if(core_count_query <= native_cpu_count):
+    if core_count_query <= native_cpu_count:
         return core_count_query
     else:
         print("Too many cores requested, single core operation fallback")
         return 1
 
+
 if __name__ == "__main__":
+    print("Please see README.md for usage instructions.")
     # Parameters
-    print("Please read README.md for use instructions.")    
-    client_id = input("Client ID: ")
-    client_secret = input("Client secret: ")
-    username = input("Spotify username: ")
+    if not client_id:
+        input("Client ID: ")
+    if not client_secret:
+        input("Client secret: ")
     playlist_uri = input("Playlist URI/Link: ")
     if playlist_uri.find("https://open.spotify.com/playlist/") != -1:
         playlist_uri = playlist_uri.replace("https://open.spotify.com/playlist/", "")
     multicore_support = enable_multicore(autoenable=False, maxcores=None, buffercores=1)
     auth_manager = oauth2.SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    playlist_name = write_playlist(username, playlist_uri)
+    playlist_name = write_playlist(playlist_uri)
     reference_file = "{}.txt".format(playlist_name)
     # Create the playlist folder
     if not os.path.exists(playlist_name):
