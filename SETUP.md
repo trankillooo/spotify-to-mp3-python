@@ -2,4 +2,4 @@ ERROR: Postprocessing: ffprobe and ffmpeg not found. Please install or provide t
 
 > choco install ffmpeg
 
-NB: install chocolatey if not there..
+NB: install chocolatey if not there...

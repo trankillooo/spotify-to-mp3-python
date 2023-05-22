@@ -11,7 +11,7 @@ This code is meant to be as simple and easy-to-use as possible. Despite this, th
 To clone this repository using Git, use
 
 ```bash
-git clone https://github.com/JayChen35/spotify-to-mp3-python.git
+git clone https://github.com/trankillooo/spotify-to-mp3-python.git
 ```
 
 If you aren't familiar with Git, navigate to the top-left of this page and find the green button labeled "Clone or download". Clicking this and then click "Download ZIP". Extract the contents of the downloaded .zip file.
@@ -60,11 +60,7 @@ If all goes well, you should see your playlist beginning to download in a folder
 
 ## Modifications
 
-If you don't like inputting your Client ID, Client Secret, Username, and URI every time, you can edit lines 96-99 in `spotify_to_mp3.py` to set the respective variables into a string containing your credentials instead of prompting with `input()`. For example, line 98 would become
-
-```python
-username = "YourUserName"
-```
+If you don't like inputting your Client ID or Secret every time, you can edit lines 13-14 in `spotify_to_mp3.py` to set the respective variables into a string containing your credentials instead of prompting with `input()`.
 
 ## Debugging
 

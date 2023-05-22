@@ -85,8 +85,12 @@ def find_and_download_songs(reference_file: str):
                     'preferredquality': '256',
                 }],
             }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([best_url])
+            try:
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                    ydl.download([best_url])
+            except yt_dlp.DownloadError as e:
+                print("error downloading", e)
+                continue
 
 
 # Multiprocessor implementation of find_and_download_songs
@@ -209,7 +213,7 @@ if __name__ == "__main__":
     # Create the playlist folder
     if not os.path.exists(playlist_name):
         os.makedirs(playlist_name)
-    os.rename(reference_file, playlist_name + "/" + reference_file)
+    os.replace(reference_file, playlist_name + "/" + reference_file)
     os.chdir(playlist_name)
     # Enable multicore support
     if multicore_support > 1:
